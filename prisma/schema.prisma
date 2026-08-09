@@ -1,0 +1,225 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  slug        String      @unique
+  title       String
+  description String
+  price       Float
+  salePrice   Float?      @map("sale_price")
+  category    String
+  image       String?
+  images      String      @default("[]")
+  inStock     Boolean     @default(true) @map("in_stock")
+  featured    Boolean     @default(false)
+  published   Boolean     @default(true)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  orderItems  OrderItem[]
+
+  @@index([category])
+  @@index([published])
+  @@map("products")
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  customerName String      @map("customer_name")
+  email        String
+  phone        String
+  company      String?
+  status       String      @default("PENDING")
+  totalAmount  Float       @map("total_amount")
+  notes        String?
+  projectType  String?     @map("project_type")
+  features     String?
+  budget       String?
+  timeline     String?
+  description  String?
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  items        OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int     @map("order_id")
+  productId Int     @map("product_id")
+  quantity  Int     @default(1)
+  price     Float
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  title     String
+  excerpt   String
+  content   String
+  category  String
+  author    String
+  image     String?
+  tags      String   @default("[]")
+  featured  Boolean  @default(false)
+  published Boolean  @default(false)
+  readTime  String?  @map("read_time")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([published, createdAt])
+  @@map("posts")
+}
+
+model Video {
+  id           Int      @id @default(autoincrement())
+  slug         String   @unique
+  title        String
+  description  String?
+  cloudinaryId String   @map("cloudinary_id")
+  thumbnailUrl String?  @map("thumbnail_url")
+  category     String?
+  published    Boolean  @default(true)
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
+model SiteContent {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  type      String   @default("TEXT")
+  label     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_contents")
+}
+
+model SupportChat {
+  id           Int           @id @default(autoincrement())
+  sessionId    String        @unique @map("session_id")
+  visitorName  String?       @map("visitor_name")
+  visitorEmail String?       @map("visitor_email")
+  status       String        @default("OPEN")
+  lastMessage  String?       @map("last_message")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  messages     ChatMessage[]
+
+  @@index([status])
+  @@map("support_chats")
+}
+
+model ChatMessage {
+  id        Int         @id @default(autoincrement())
+  chatId    Int         @map("chat_id")
+  content   String
+  role      String
+  createdAt DateTime    @default(now()) @map("created_at")
+  chat      SupportChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+  @@map("chat_messages")
+}
+
+model Analytics {
+  id        Int      @id @default(autoincrement())
+  event     String
+  path      String
+  referrer  String?
+  sessionId String?  @map("session_id")
+  meta      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([event, createdAt])
+  @@index([createdAt])
+  @@map("analytics")
+}
+
+model Gallery {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  filePath    String   @map("file_path")
+  alt         String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([sortOrder])
+  @@map("gallery")
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  price       Float?
+  image       String?
+  icon        String?
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@map("services")
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  label     String
+  type      String   @default("TEXT")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
+
+model Portfolio {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  url         String?
+  category    String?
+  tags        String   @default("[]")
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([published])
+  @@map("portfolio_items")
+}
