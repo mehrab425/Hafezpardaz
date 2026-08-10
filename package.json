@@ -2,11 +2,15 @@
   "name": "hafez-pardaz-sepehr",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "npx prisma migrate deploy && node seed-docker.js && next start",
-    "start:standalone": "npx prisma migrate deploy && node seed-docker.js && node .next/standalone/server.js",
+    "build": "prisma generate && next build && node scripts/postbuild.js",
+    "start": "node server.js",
+    "start:next": "npx prisma migrate deploy && node seed-docker.js && next start -H 0.0.0.0",
+    "start:standalone": "node server.js",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

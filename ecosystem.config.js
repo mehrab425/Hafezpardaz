@@ -7,8 +7,7 @@ module.exports = {
   apps: [
     {
       name: "hafezpardaz",
-      script: "node",
-      args: ".next/standalone/server.js",
+      script: "server.js",
       cwd: "/home/USERNAME/domains/yourdomain.ir/public_html",
       instances: 1,
       exec_mode: "fork",
@@ -17,7 +16,7 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 3000,
         // Set all env vars in the host panel (ParsPack) when possible
-        DATABASE_URL: "file:./prisma/prod.db",
+        DATABASE_URL: "file:./prisma/data.db",
         AUTH_SECRET: "replace-with-long-random-secret",
         NEXTAUTH_SECRET: "replace-with-long-random-secret",
         AUTH_URL: "https://yourdomain.ir",

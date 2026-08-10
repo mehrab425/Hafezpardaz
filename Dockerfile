@@ -24,10 +24,12 @@ ENV NEXTAUTH_URL="http://localhost:3000"
 RUN npx prisma generate
 RUN npm run build
 
-# Copy static assets into standalone output directory
-RUN cp -r public .next/standalone/public && \
-    mkdir -p .next/standalone/.next && \
-    cp -r .next/static .next/standalone/.next/static
+# Copy static assets into standalone output directory (also done by scripts/postbuild.js)
+RUN node scripts/postbuild.js || ( \
+  cp -r public .next/standalone/public && \
+  mkdir -p .next/standalone/.next && \
+  cp -r .next/static .next/standalone/.next/static \
+)
 
 # Create required runtime directories
 RUN mkdir -p storage/uploads prisma
