@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "npx prisma migrate deploy && node seed-docker.js && next start",
+    "start:standalone": "npx prisma migrate deploy && node seed-docker.js && node .next/standalone/server.js",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "prisma": {

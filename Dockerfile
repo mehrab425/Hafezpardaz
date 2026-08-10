@@ -11,11 +11,13 @@ RUN npm ci
 # Copy source
 COPY . .
 
-# Environment for build
+# Build-time placeholders only (overridden at runtime via ParsPack/Docker env)
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV DATABASE_URL="file:./prisma/dev.db"
-ENV NEXTAUTH_SECRET="HafezPardazSepehr2024ChangeThis"
+ENV AUTH_SECRET="build-time-placeholder-set-real-secret-at-runtime"
+ENV NEXTAUTH_SECRET="build-time-placeholder-set-real-secret-at-runtime"
+ENV AUTH_URL="http://localhost:3000"
 ENV NEXTAUTH_URL="http://localhost:3000"
 
 # Generate Prisma client then build Next.js

@@ -1,3 +1,8 @@
+/**
+ * PM2 example for hosting that uses the Next.js standalone server.
+ * Do NOT point script at a legacy Express `src/server.js` — that app is not this project.
+ * Replace placeholders; never commit real secrets.
+ */
 module.exports = {
   apps: [
     {
@@ -11,9 +16,11 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
-        // Set all env vars here (not in .env.local — it is NOT read in production)
-        DATABASE_URL: "mysql://USER:PASS@localhost:3306/DB_NAME?connection_limit=5&pool_timeout=20",
-        NEXTAUTH_SECRET: "your-secret-here",
+        // Set all env vars in the host panel (ParsPack) when possible
+        DATABASE_URL: "file:./prisma/prod.db",
+        AUTH_SECRET: "replace-with-long-random-secret",
+        NEXTAUTH_SECRET: "replace-with-long-random-secret",
+        AUTH_URL: "https://yourdomain.ir",
         NEXTAUTH_URL: "https://yourdomain.ir",
         CLOUDINARY_CLOUD_NAME: "your_cloud_name",
         CLOUDINARY_API_KEY: "your_api_key",

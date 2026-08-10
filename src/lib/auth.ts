@@ -3,7 +3,13 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Admin auth is email + password via Prisma User (no phone-based login).
+ * Sessions use JWT — not express-session / MemoryStore.
+ * Set AUTH_SECRET (or NEXTAUTH_SECRET) and AUTH_URL (or NEXTAUTH_URL) in production.
+ */
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -35,7 +41,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  },
   pages: { signIn: "/admin/login" },
   callbacks: {
     jwt({ token, user }) {
